@@ -20,3 +20,10 @@ TCP Chat Application with GUI, developed in Java.
 
 ## Note to developers:
 - The communication mechanism: Using ObjectOutputStream to write objects only when necessary, primarily using DataOutputStream to write bytes into server, using InputOutputStream to receive objects, and BufferedReader to read the incoming bytes, needs careful attention to any modification. Replacing everything by ObjectOutputStream/ObjectInputStream is not optimal as it seems, and comes with many complications. Point is, attention is needed, **doing hours of exploratory modification can save you days of debugging**.
+
+## List:
+[X] Sign-up and sign-in.
+[X] Connect and chat to an online user.
+[X] Multi-thread.
+[ ] Personal page with avatar upload capability.
+[ ] Write and publish blog posts.
