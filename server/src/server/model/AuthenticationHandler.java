@@ -153,13 +153,12 @@ public class AuthenticationHandler extends Thread {
 				StringTokenizer tokens = new StringTokenizer(data, ":");
 				String uname = tokens.nextToken();
 				String pass = tokens.nextToken();
-				String name = tokens.nextToken();
 				if (usernameNotTaken(uname))
 					outToClient.writeBytes("not ok" + '\n');
 				else {
-					saveDetails(name, uname, pass);
+					saveDetails("", uname, pass);
 					outToClient.writeBytes("ok" + '\n');
-					ServerReceiver CH = new ServerReceiver(cSocket, name, uname);
+					ServerReceiver CH = new ServerReceiver(cSocket, "", uname);
 					cLists.add(CH);
 					CH.start();
 				}
