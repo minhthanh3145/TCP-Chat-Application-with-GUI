@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 
 import client.model.ClientReceiver;
 import client.model.ClientSender;
@@ -20,6 +21,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.widgets.FileDialog;
 
 public class ClientShell {
 	private Display display;
@@ -41,11 +43,13 @@ public class ClientShell {
 	private Composite composite_Info;
 	private Label label_Avatar;
 	private Button btnUpdateAvatar;
-	private Label label;
+	private Label lblPersonalInformation;
 	private Label lblUsername;
 	private Text text_username;
 	private Label lblPassword;
 	private Text text_password;
+	private String pw;
+	private Image avatar;
 
 	public ClientShell() {
 	}
@@ -66,8 +70,9 @@ public class ClientShell {
 		this.clientReceiveHandler.setClientShell(this);
 	}
 
-	public void setShellTitle(String title) {
-		name = title;
+	public void setShellInfo(String username, String pass) {
+		name = username;
+		pw = pass;
 	}
 
 	/**
@@ -102,7 +107,7 @@ public class ClientShell {
 	protected void createContent() {
 		shell = new Shell();
 		shell.setSize(527, 337);
-		shell.setText(name);
+		shell.setText("TCP Chat App - "+ name);
 		createComposites();
 		registerControlListeners();
 	}
@@ -124,14 +129,33 @@ public class ClientShell {
 		label_Avatar.setBounds(24, 24, 128, 128);
 		
 		btnUpdateAvatar = new Button(composite_Info, SWT.NONE);
+		btnUpdateAvatar.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Open a Dialog to select and upload avatar
+				FileDialog fd = new FileDialog(shell, SWT.OPEN);
+				fd.setText("Choose File...");
+				fd.setFilterPath("C:/");
+				String[] filterExt = { "*.jpg", "*.JPG", "*.jpeg", "*.JPEG", "*png", "*.PNG", "*.bmp", "*.BMP", "*.gif" };
+				fd.setFilterExtensions(filterExt);
+				if (fd.open() != null) {
+					String path = fd.getFilterPath();
+					String fileName = fd.getFileName();
+					System.out.println(path + "\\" + fileName);
+					Image img = SWTResourceManager.getImage(path + "\\" + fileName);
+					avatar = new Image(display, img.getImageData().scaledTo(128, 128));
+				}
+				label_Avatar.setImage(avatar);
+			}
+		});
 		btnUpdateAvatar.setBounds(40, 170, 96, 25);
 		btnUpdateAvatar.setText("Update Avatar...");
 		
-		label = new Label(composite_Info, SWT.NONE);
-		label.setAlignment(SWT.CENTER);
-		label.setText("<Nickname>");
-		label.setFont(SWTResourceManager.getFont("Segoe UI", 16, SWT.NORMAL));
-		label.setBounds(190, 10, 303, 42);
+		lblPersonalInformation = new Label(composite_Info, SWT.NONE);
+		lblPersonalInformation.setAlignment(SWT.CENTER);
+		lblPersonalInformation.setText("Personal Information");
+		lblPersonalInformation.setFont(SWTResourceManager.getFont("Century Gothic", 20, SWT.NORMAL));
+		lblPersonalInformation.setBounds(190, 10, 303, 42);
 		
 		lblUsername = new Label(composite_Info, SWT.NONE);
 		lblUsername.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.NORMAL));
@@ -143,6 +167,7 @@ public class ClientShell {
 		text_username.setEditable(false);
 		text_username.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.NORMAL));
 		text_username.setBounds(267, 75, 226, 25);
+		text_username.setText(name);
 		
 		lblPassword = new Label(composite_Info, SWT.NONE);
 		lblPassword.setText("Password");
@@ -150,10 +175,11 @@ public class ClientShell {
 		lblPassword.setAlignment(SWT.CENTER);
 		lblPassword.setBounds(190, 139, 71, 25);
 		
-		text_password = new Text(composite_Info, SWT.BORDER);
+		text_password = new Text(composite_Info, SWT.BORDER | SWT.PASSWORD);
 		text_password.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.NORMAL));
 		text_password.setEditable(false);
 		text_password.setBounds(267, 136, 226, 25);
+		text_password.setText(pw);
 		
 		TabItem tbtmChat = new TabItem(tabFolder, SWT.NONE);
 		tbtmChat.setText("Chat");
@@ -222,6 +248,7 @@ public class ClientShell {
 			public void handleEvent(Event arg0) {
 				if (!currentCounterParty.getText().equals("")) {
 					clientSendHandler.sendMessage("Unicast", currentCounterParty.getText(), txtChatBox.getText());
+					txtChatBox.setText("");
 				}
 			}
 		});
