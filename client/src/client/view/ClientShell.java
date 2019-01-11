@@ -183,8 +183,8 @@ public class ClientShell {
 		text_password.setText(pw);
 		
 		btnDisplayPassword = new Button(composite_Info, SWT.NONE);
-		btnDisplayPassword.setBounds(418, 170, 75, 25);
-		btnDisplayPassword.setText("New Button");
+		btnDisplayPassword.setBounds(365, 170, 128, 25);
+		btnDisplayPassword.setText("Display Password");
 
 		TabItem tbtmChat = new TabItem(tabFolder, SWT.NONE);
 		tbtmChat.setText("Chat");
