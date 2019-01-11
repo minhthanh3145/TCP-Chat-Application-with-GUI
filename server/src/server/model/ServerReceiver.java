@@ -132,6 +132,14 @@ public class ServerReceiver extends Thread {
 		writer.close();
 	}
 	
+	private void saveAvatar(String owner, String path) throws IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter("avatars.txt", true));
+		writer.append(owner + ":::" + path);
+		writer.append('\n');
+		writer.flush();
+		writer.close();
+	}
+	
 	public void run() {
 		try {
 			while (true) {
@@ -194,6 +202,30 @@ public class ServerReceiver extends Thread {
 					ObjectOutputStream outputObject = new ObjectOutputStream(cSocket.getOutputStream());
 					outputObject.writeObject(allBlogPosts);
 					outToClient.writeBytes("Blog posts loaded." + '\n');
+					parser.close();
+					
+				} else if("Avatar changed".equals(cmd)){
+					String owner = inFromClient.readLine();
+					String path = inFromClient.readLine();
+					saveAvatar(owner, path);
+					
+				} else if("Get avatar".equals(cmd)){
+					outToClient.writeBytes(cmd + '\n');
+					
+					String owner = inFromClient.readLine();
+					FileReader inputFile = new FileReader("avatars.txt");
+					Scanner parser = new Scanner(inputFile);
+					while (parser.hasNextLine()) {
+						String line = parser.nextLine();
+						if ("".equals(line))
+							continue;
+						if(line.split(":::")[0].equals(owner)){
+							ObjectOutputStream outputObject = new ObjectOutputStream(cSocket.getOutputStream());
+							String pathToAvatar = line.split(":::")[1];
+							outputObject.writeObject(pathToAvatar);
+							outToClient.writeBytes("Avatar loaded. " + '\n');
+						}
+					}
 					parser.close();
 				}
 			}

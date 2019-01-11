@@ -83,6 +83,15 @@ public class ClientReceiver extends Thread {
 							clientShell.updateBlogPostsList(blogPosts);
 						}
 					});
+				} else if(sentence.equals("Get avatar")){
+					ObjectInputStream objectInput = new ObjectInputStream(cSocket.getInputStream());
+					String avatarPath = (String) objectInput.readObject();
+					clientShell.getDisplay().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							clientShell.updateAvatar(avatarPath);
+						}
+					});
 				} else
 					System.out.println(sentence);
 			} catch (ClassNotFoundException ex) {
