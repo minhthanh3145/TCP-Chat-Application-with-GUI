@@ -67,6 +67,7 @@ public class ClientShell {
 	private Label lblBlogContent;
 	private List lstBlogTitle;
 	private ArrayList<String> blogPosts = new ArrayList<>();
+	private Button btnDisplayPassword;
 
 	public ClientShell() {
 	}
@@ -142,31 +143,11 @@ public class ClientShell {
 		tbtmInfo.setControl(composite_Info);
 
 		label_Avatar = new Label(composite_Info, SWT.NONE);
-		label_Avatar.setImage(SWTResourceManager
-				.getImage(""));
 		label_Avatar.setBounds(24, 24, 128, 128);
+		clientSendHandler.sendMessage("Get avatar", name);
 
 		btnUpdateAvatar = new Button(composite_Info, SWT.NONE);
-		btnUpdateAvatar.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// Open a Dialog to select and upload avatar
-				FileDialog fd = new FileDialog(shell, SWT.OPEN);
-				fd.setText("Choose File...");
-				fd.setFilterPath("C:/");
-				String[] filterExt = { "*.jpg", "*.JPG", "*.jpeg", "*.JPEG", "*png", "*.PNG", "*.bmp", "*.BMP",
-						"*.gif" };
-				fd.setFilterExtensions(filterExt);
-				if (fd.open() != null) {
-					String path = fd.getFilterPath();
-					String fileName = fd.getFileName();
-					System.out.println(path + "\\" + fileName);
-					Image img = SWTResourceManager.getImage(path + "\\" + fileName);
-					avatar = new Image(display, img.getImageData().scaledTo(128, 128));
-				}
-				label_Avatar.setImage(avatar);
-			}
-		});
+		
 		btnUpdateAvatar.setBounds(40, 170, 96, 25);
 		btnUpdateAvatar.setText("Update Avatar...");
 
@@ -194,11 +175,16 @@ public class ClientShell {
 		lblPassword.setAlignment(SWT.CENTER);
 		lblPassword.setBounds(190, 139, 71, 25);
 
-		text_password = new Text(composite_Info, SWT.BORDER | SWT.PASSWORD);
+		text_password = new Text(composite_Info, SWT.BORDER);
 		text_password.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.NORMAL));
 		text_password.setEditable(false);
 		text_password.setBounds(267, 136, 226, 25);
+		text_password.setEchoChar('*');
 		text_password.setText(pw);
+		
+		btnDisplayPassword = new Button(composite_Info, SWT.NONE);
+		btnDisplayPassword.setBounds(418, 170, 75, 25);
+		btnDisplayPassword.setText("New Button");
 
 		TabItem tbtmChat = new TabItem(tabFolder, SWT.NONE);
 		tbtmChat.setText("Chat");
@@ -348,6 +334,40 @@ public class ClientShell {
 				}
 			}
 		});
+		
+		btnDisplayPassword.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if(text_password.getEchoChar() != '\0'){
+					text_password.setEchoChar( '\0' );
+				} else
+					text_password.setEchoChar('*');
+			}
+		});
+		
+		btnUpdateAvatar.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Open a Dialog to select and upload avatar
+				FileDialog fd = new FileDialog(shell, SWT.OPEN);
+				fd.setText("Choose File...");
+				fd.setFilterPath("C:/");
+				String[] filterExt = { "*.jpg", "*.JPG", "*.jpeg", "*.JPEG", "*png", "*.PNG", "*.bmp", "*.BMP",
+						"*.gif" };
+				fd.setFilterExtensions(filterExt);
+				if (fd.open() != null) {
+					String path = fd.getFilterPath();
+					String fileName = fd.getFileName();
+					String fullpath = path + "\\" + fileName;
+					System.out.println(fullpath);
+					Image img = SWTResourceManager.getImage(fullpath);
+					avatar = new Image(display, img.getImageData().scaledTo(128, 128));
+					clientSendHandler.sendMessage("Avatar changed", name, fullpath);
+				}
+				label_Avatar.setImage(avatar);
+			}
+		});
+		
 	}
 
 	public void updateOnlineUsersList(String... users) {
@@ -373,5 +393,11 @@ public class ClientShell {
 		lstBlogTitle.setItems(this.blogPosts.stream()
 					.map(a -> a.split(":")[1])
 					.toArray(String[]::new));
+	}
+
+	public void updateAvatar(String avatarPath) {
+		Image img = SWTResourceManager.getImage(avatarPath);
+		avatar = new Image(display, img.getImageData().scaledTo(128, 128));
+		label_Avatar.setImage(avatar);
 	}
 }

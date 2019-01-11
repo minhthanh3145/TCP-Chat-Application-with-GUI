@@ -116,6 +116,28 @@ public class ClientSender extends Thread {
 			} else if("Load posts".equals(command)){
 				k = "Load posts" + '\n';
 				outToServer.writeBytes(k);
+			} else if("Avatar changed".equals(command)){
+				k = "Avatar changed" + '\n';
+				outToServer.writeBytes(k);
+				
+				System.out.print("owner: ");
+				String owner = args[1];
+				System.out.println("");
+				outToServer.writeBytes(owner + '\n');
+
+				System.out.print("path: ");
+				String path = args[2];
+				System.out.println("");
+				outToServer.writeBytes(path + '\n');
+				
+			} else if("Get avatar".equals(command)){
+				k = "Get avatar" + '\n';
+				outToServer.writeBytes(k);
+				
+				System.out.print("owner: ");
+				String owner = args[1];
+				System.out.println("");
+				outToServer.writeBytes(owner + '\n');
 			}
 			
 			outToServer.flush();
