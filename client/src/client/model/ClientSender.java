@@ -65,6 +65,7 @@ public class ClientSender extends Thread {
 						clientShell.updateChatHistory("Me >> " + msg);
 					}
 				});
+				
 			} else if (command.equals("Multicast")) {
 				k = "Multicast" + '\n';
 				outToServer.writeBytes(k);
@@ -86,12 +87,39 @@ public class ClientSender extends Thread {
 				System.out.print("Message: ");
 				String msg = args[1];
 				System.out.println("");
+				
 				outToServer.writeBytes(msg + '\n');
+				
 			} else if ("Log out".equals(command)) {
 				k = "Log out" + '\n';
 				outToServer.writeBytes(k);
+				
+			} else if("Blog post".equals(command)) {
+				k = "Blog post" + '\n';
+				outToServer.writeBytes(k);
+				
+				System.out.print("owner: ");
+				String owner = args[1];
+				System.out.println("");
+				outToServer.writeBytes(owner + '\n');
+
+				System.out.print("title: ");
+				String title = args[2];
+				System.out.println("");
+				outToServer.writeBytes(title + '\n');
+				
+				System.out.print("content: ");
+				String content = args[3];
+				System.out.println("");
+				outToServer.writeBytes(content + '\n');
+				
+			} else if("Load posts".equals(command)){
+				k = "Load posts" + '\n';
+				outToServer.writeBytes(k);
 			}
+			
 			outToServer.flush();
+			
 		} catch (IOException ex) {
 			Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
 		}

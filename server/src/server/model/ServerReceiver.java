@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -38,7 +37,7 @@ public class ServerReceiver extends Thread {
 		writer.close();
 	}
 
-	void addFrinedRequest(String frdname) throws IOException {
+	void addFriendRequest(String frdname) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter("requests.txt", true));
 		writer.write("send:" + uname + ":" + frdname);
 		writer.newLine();
@@ -124,7 +123,15 @@ public class ServerReceiver extends Thread {
 			}
 		}
 	}
-
+	
+	private void addBlogPost(String owner, String title, String content, String cmd) throws IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter("blogs.txt", true));
+		writer.write(owner + ":" + title + ":" + content);
+		writer.newLine();
+		writer.flush();
+		writer.close();
+	}
+	
 	public void run() {
 		try {
 			while (true) {
@@ -151,7 +158,7 @@ public class ServerReceiver extends Thread {
 					requestConfirmation(name);
 				} else if ("Send Request".equals(cmd)) {
 					String name = inFromClient.readLine();
-					addFrinedRequest(name);
+					addFriendRequest(name);
 				} else if ("Unicast".equals(cmd)) {
 					String user = inFromClient.readLine();
 					String msg = inFromClient.readLine();
@@ -167,6 +174,27 @@ public class ServerReceiver extends Thread {
 					delUser();
 					outToClient.writeBytes("Logged out of the system." + '\n');
 					break;
+				} else if("Blog post".equals(cmd)) {		
+					String owner = inFromClient.readLine();
+					String title = inFromClient.readLine();
+					String content = inFromClient.readLine();
+					addBlogPost(owner, title, content, cmd);
+				} else if("Load posts".equals(cmd)) {
+					outToClient.writeBytes(cmd + '\n');
+					
+					ArrayList<String> allBlogPosts = new ArrayList<String>();
+					FileReader inputFile = new FileReader("blogs.txt");
+					Scanner parser = new Scanner(inputFile);
+					while (parser.hasNextLine()) {
+						String line = parser.nextLine();
+						if ("".equals(line))
+							continue;
+						allBlogPosts.add(line);
+					}
+					ObjectOutputStream outputObject = new ObjectOutputStream(cSocket.getOutputStream());
+					outputObject.writeObject(allBlogPosts);
+					outToClient.writeBytes("Blog posts loaded." + '\n');
+					parser.close();
 				}
 			}
 		} catch (IOException ex) {

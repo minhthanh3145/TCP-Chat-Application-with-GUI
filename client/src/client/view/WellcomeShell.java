@@ -43,7 +43,7 @@ public class WellcomeShell {
 			}
 		}
 	}
-	
+
 	protected void createContent() {
 		shell = new Shell();
 		shell.setSize(450, 300);
@@ -59,7 +59,7 @@ public class WellcomeShell {
 		txtUsername = new Text(logInComposite, SWT.BORDER);
 		txtUsername.setBounds(84, 24, 156, 21);
 
-		txtPassword = new Text(logInComposite, SWT.BORDER);
+		txtPassword = new Text(logInComposite, SWT.BORDER | SWT.PASSWORD);
 		txtPassword.setBounds(84, 51, 156, 21);
 
 		Label lblUsername = new Label(logInComposite, SWT.NONE);
@@ -125,7 +125,7 @@ public class WellcomeShell {
 				ClientShell clientShell = new ClientShell();
 				clientShell.setClientSendHandler(client.getClientSendHandler());
 				clientShell.setReceiveSendHandler(client.getClientReceiveHandler());
-				clientShell.setShellTitle(username);
+				clientShell.setShellInfo(username, password);
 				clientShell.open();
 
 			}
