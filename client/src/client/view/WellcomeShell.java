@@ -43,7 +43,7 @@ public class WellcomeShell {
 			}
 		}
 	}
-	
+
 	protected void createContent() {
 		shell = new Shell();
 		shell.setSize(450, 300);

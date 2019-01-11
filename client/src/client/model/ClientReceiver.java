@@ -71,6 +71,18 @@ public class ClientReceiver extends Thread {
 									messages[0].replaceAll("Message from ", "") + ">>" + messages[1]);
 						}
 					});
+				} else if(sentence.equals("Load posts")){
+					System.out.println("Loading blog posts ... ");
+					ObjectInputStream objectInput = new ObjectInputStream(cSocket.getInputStream());
+					ArrayList<String> objecAsArrayList = new ArrayList<String>();
+					objecAsArrayList = (ArrayList<String>) objectInput.readObject();
+					String[] blogPosts = objecAsArrayList.toArray(new String[0]);
+					clientShell.getDisplay().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							clientShell.updateBlogPostsList(blogPosts);
+						}
+					});
 				} else
 					System.out.println(sentence);
 			} catch (ClassNotFoundException ex) {

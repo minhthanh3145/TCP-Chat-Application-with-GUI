@@ -74,6 +74,7 @@ public class ServerSender extends Thread {
 		writer.flush();
 		writer.close();
 	}
+	
 
 	public void handleSendNotifications() throws IOException {
 		ArrayList<String> NOT_LIST = new ArrayList<String>();
