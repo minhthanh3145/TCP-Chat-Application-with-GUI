@@ -25,5 +25,4 @@ TCP Chat Application with GUI, developed in Java.
 - [X] Sign-up and sign-in.
 - [X] Connect and chat to an online user.
 - [X] Multi-thread.
-- [ ] Personal page with avatar upload capability.
-- [ ] Write and publish blog posts.
+- [X] Personal page with avatar upload capability.
