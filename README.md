@@ -1,5 +1,4 @@
-# TCP-Chat-Application-with-GUI
-TCP Chat Application with GUI, developed in Java.
+# Multi-threaded TCP Chat-Blog Application
 
 ## Prerequisites:
 - [Eclipse Neon 3](https://www.eclipse.org/downloads/packages/release/neon/3/eclipse-ide-eclipse-committers)
@@ -9,9 +8,6 @@ TCP Chat Application with GUI, developed in Java.
 - Clone this repository, then in Eclipse: **File -> Import -> General -> Existing projects into work space**.
 - Open **Server.java** in Server project and hit start.
 - Open **Main.java** in Client project and hit start.
-
-## How to use libraries:
-- Search on maven website for the library that you want to use, and copy and paste the dependency declaration into pom.xml and Eclipse will automatically refresh the project. After the refresh, the library is usable. 
 
 ## Structure of the project:
 - **Server project** represents the server, the default local host is *4445*. Starting the server project is equivalent to starting the server. The server handles all information by writing them down to text files. Authentication (sign-in or sign-up) is handled by writing down the registered information and check those against user's input. The server also receives messages sent from the clients by writing them down to local text files. On another thread running parallelly, the server continuously read the local text files, and send the unsent messages, finally marking them as sent. 
